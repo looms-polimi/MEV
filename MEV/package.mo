@@ -602,52 +602,52 @@ francesco.casella@polimi.it</a>.
     package OnOffControl "Scenarios with on-off emergency control of the bell jar"
       extends Modelica.Icons.ExamplesPackage;
 
-      model Scenario1 "First patient is attached at time = 10, linear control"
+      model Scenario1 "First patient is attached at time = 10, on-off control"
         extends LinearControl.Scenario1(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario1;
 
-      model Scenario2 "Five patients attached, linear control"
+      model Scenario2 "Five patients attached, on-off control"
         extends LinearControl.Scenario2(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 40, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 40, Interval = 0.005, Tolerance = 1e-06));
       end Scenario2;
 
-      model Scenario3 "Ten patients attached, linear control"
+      model Scenario3 "Ten patients attached, on-off control"
         extends LinearControl.Scenario3(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario3;
 
-      model Scenario4 "Ten patients attached, 5 with limited compliance, linear control"
+      model Scenario4 "Ten patients attached, 5 with limited compliance, on-off control"
         extends LinearControl.Scenario4(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario4;
 
-      model Scenario5 "Nine patients attached, one more is attached at time = 10, linear control"
+      model Scenario5 "Nine patients attached, one more is attached at time = 10, on-off control"
         extends LinearControl.Scenario5(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario5;
 
       model Scenario6 "Ten patients attached, all with same phase"
         extends LinearControl.Scenario6(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario6;
 
-      model Scenario7 "Ten patients attached, last patient tube detached at time = 10"
+      model Scenario7 "Ten patients attached, last patient tube detached at time = 10, on-off control"
         extends LinearControl.Scenario7(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 30, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 30, Interval = 0.005, Tolerance = 1e-06));
       end Scenario7;
 
-      model Scenario8 "Twenty patients attached, linear control"
+      model Scenario8 "Twenty patients attached, on-off control"
         extends LinearControl.Scenario8(ambient(useOnOffControl = true));
         annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario8;
     end OnOffControl;
   end Simulations;
@@ -683,7 +683,7 @@ francesco.casella@polimi.it</a>.
       connect(cylinder.outlet, outletFlow.port) annotation(
         Line(points = {{6, -18}, {24, -18}}, color = {111, 164, 171}));
       annotation(
-        experiment(StopTime = 5, Interval = 0.06, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
+        experiment(StopTime = 5, Interval = 0.06, Tolerance = 1e-06),
         Diagram(coordinateSystem(extent = {{-100, -60}, {100, 60}})),
         Icon(coordinateSystem(extent = {{-100, -60}, {100, 60}})),
         Documentation(info = "<html>
@@ -711,7 +711,7 @@ francesco.casella@polimi.it</a>.
       connect(sink.port, pipeSegment.outlet) annotation(
         Line(points = {{80, 0}, {34, 0}}, color = {111, 164, 171}));
       annotation(
-        experiment(StopTime = 0.002, __Dymola_NumberOfIntervals = 5000, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
+        experiment(StopTime = 0.002, Tolerance = 1e-06),
         Diagram(coordinateSystem(extent = {{-100, -60}, {100, 60}})),
         Icon(coordinateSystem(extent = {{-100, -60}, {100, 60}})));
     end TestPipeSegment;
@@ -746,7 +746,7 @@ francesco.casella@polimi.it</a>.
       connect(source1.port, pipeSegment1.outlet) annotation(
         Line(points = {{0, -12}, {0, 0}, {8, 0}}, color = {111, 164, 171}));
       annotation(
-        experiment(__Dymola_NumberOfIntervals = 5000, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
+        experiment(StopTime = 10, Tolerance = 1e-06),
         Diagram(coordinateSystem(extent = {{-120, -60}, {120, 60}})),
         Icon(coordinateSystem(extent = {{-120, -60}, {120, 60}})));
     end TestPipes;
@@ -813,7 +813,7 @@ francesco.casella@polimi.it</a>.
       connect(standardPatient.valveCommand, opening.y) annotation(
         Line(points = {{-16.8, -16}, {-43, -16}}, color = {0, 0, 127}));
       annotation(
-        experiment(StopTime = 10, __Dymola_NumberOfIntervals = 5000, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
+        experiment(StopTime = 10, Tolerance = 1e-06),
         Diagram(coordinateSystem(extent = {{-120, -120}, {120, 120}})),
         Icon(coordinateSystem(extent = {{-120, -120}, {120, 120}})));
     end TestStandardPatient;
@@ -840,7 +840,7 @@ francesco.casella@polimi.it</a>.
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
-        experiment(StopTime = 10, __Dymola_NumberOfIntervals = 5000, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+        experiment(StopTime = 10, Interval = 0.005, Tolerance = 1e-06));
     end TestBellJarOpenLoop;
 
     model TestBellJarLinearControl
@@ -857,7 +857,7 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{110, 30}, {130, 50}})));
       Controls.LinearController controller(level_sp = (bellJar.ymax + bellJar.ymin) / 2, Kp = 10, T = 0.3) annotation(
         Placement(transformation(extent = {{-26, 0}, {-42, 16}})));
-      ParameterizedComponents.BellJar bellJar(ystart = 0.6) annotation(
+      ParameterizedComponents.BellJar bellJar(ystart = 0.06) annotation(
         Placement(transformation(extent = {{-12, -24}, {20, 16}})));
     equation
       connect(pressureSource.port, controlValve.inlet) annotation(
@@ -875,7 +875,7 @@ francesco.casella@polimi.it</a>.
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
-        experiment(StopTime = 100, __Dymola_NumberOfIntervals = 5000, __Dymola_Algorithm = "Dassl"));
+        experiment(StopTime = 100, StartTime = 0, Tolerance = 1e-06, Interval = 0.2));
     end TestBellJarLinearControl;
 
     model TestCylinderUnitOnOff
@@ -888,7 +888,7 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{60, -30}, {40, -10}})));
       Modelica.Blocks.Sources.Pulse opening(amplitude = -25, width = 40, period = 60 / 20, startTime = 0) annotation(
         Placement(visible = true, transformation(origin = {52, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      inner Ambient ambient annotation(
+      inner Ambient ambient(useOnOffControl = true)  annotation(
         Placement(transformation(extent = {{110, 30}, {130, 50}})));
       Controls.OnOffControllerWithHysteresis controller(level_min = bellJar.ymin + 0.02, level_max = bellJar.ymax - 0.02) annotation(
         Placement(transformation(extent = {{-28, 0}, {-44, 16}})));
@@ -910,7 +910,7 @@ francesco.casella@polimi.it</a>.
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
-        experiment(StopTime = 100, __Dymola_NumberOfIntervals = 5000, __Dymola_Algorithm = "Dassl"));
+        experiment(StopTime = 100, StartTime = 0, Tolerance = 1e-06, Interval = 0.2));
     end TestCylinderUnitOnOff;
 
     model TestCylinderUnitLinearize
@@ -939,7 +939,7 @@ francesco.casella@polimi.it</a>.
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false)),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -60}, {140, 60}})),
-        experiment(StopTime = 10, __Dymola_NumberOfIntervals = 5000, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"));
+        experiment(StopTime = 10, Interval = 0.005, Tolerance = 1e-06));
     end TestCylinderUnitLinearize;
 
     model TestDutyCycleGenerator
@@ -1141,6 +1141,6 @@ francesco.casella@polimi.it</a>.
     end DutyCycleGenerator;
   end Controls;
   annotation(
-    version = "1.0.0",
+    version = "1.0.1",
     uses(Modelica(version = "3.2.3")));
 end MEV;
