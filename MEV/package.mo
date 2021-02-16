@@ -534,6 +534,26 @@ francesco.casella@polimi.it</a>.
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-180, -100}, {180, 100}})),
         Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "%N% X"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "%N% X")}));
     end BaseSystem;
+
+    model StandardPatientMixSystem "System with standard mix of 10 patients"
+      extends MEV.SystemModels.BaseSystem(patients(
+        C = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1000/(0.01*9.81*999),
+        R = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001));
+    end StandardPatientMixSystem;
+
+    model WorstCasePatientSystem "Worst case with 10 patients max C min R"
+      extends MEV.SystemModels.BaseSystem(patients(
+        each C = 60/1000/(0.01*9.81*999),
+        each R = 6/100*9.81*999/0.001));
+    end WorstCasePatientSystem;
+
+    model StandardPatientMix2XSystem "System with 2X standard mix of patients"
+      extends MEV.SystemModels.BaseSystem(N = 20, patients(
+        C = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60,
+             30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1000/(0.01*9.81*999),
+        R = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18,
+              6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001));
+    end StandardPatientMix2XSystem;
   end SystemModels;
 
   package Simulations "Simuation scenarios for the MEV system"
@@ -974,6 +994,23 @@ francesco.casella@polimi.it</a>.
         Icon(coordinateSystem(preserveAspectRatio = false)),
         Diagram(coordinateSystem(preserveAspectRatio = false)));
     end TestSequencer;
+
+    model TestPatientController
+      extends Modelica.Icons.Example;
+      Controls.PatientController patientController annotation(
+        Placement(visible = true, transformation(origin = {0, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
+      Modelica.Blocks.Sources.TimeTable RR(table = [0, 0; 10, 0; 10, 30; 48, 30; 48, 20; 79, 20; 79, 0; 100, 0])  annotation(
+        Placement(visible = true, transformation(origin = {-62, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+      Modelica.Blocks.Sources.TimeTable dutyCycle(table = [0, 50; 20, 50; 50, 25; 100, 25])  annotation(
+        Placement(visible = true, transformation(origin = {-62, -24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    equation
+      connect(RR.y, patientController.RR) annotation(
+        Line(points = {{-50, 12}, {-28, 12}, {-28, 6}, {-12, 6}}, color = {0, 0, 127}));
+      connect(dutyCycle.y, patientController.dutyCycle) annotation(
+        Line(points = {{-50, -24}, {-36, -24}, {-36, -6}, {-12, -6}}, color = {0, 0, 127}));
+    annotation(
+        experiment(StartTime = 0, StopTime = 100, Tolerance = 1e-6, Interval = 0.2));
+    end TestPatientController;
   end Test;
 
   package Media "Medium models"
@@ -1139,8 +1176,41 @@ francesco.casella@polimi.it</a>.
       annotation(
         Icon(graphics = {Rectangle(extent = {{-100, 100}, {100, -100}})}));
     end DutyCycleGenerator;
+
+    model PatientController
+    Modelica.Blocks.Interfaces.RealOutput opening "Opening signal for patient valve [p.u.]" annotation(
+        Placement(visible = true,transformation(extent = {{84, -2}, {104, 18}}, rotation = 0), iconTransformation(extent = {{100, -20}, {140, 20}}, rotation = 0)));
+    Modelica.Blocks.Interfaces.RealInput dutyCycle "Duty cycle [%]" annotation(
+        Placement(visible = true, transformation(extent = {{-130, -36}, {-90, 4}}, rotation = 0), iconTransformation(extent = {{-140, -80}, {-100, -40}}, rotation = 0)));
+    Modelica.Blocks.Interfaces.RealInput RR "Respiratory rate [acts/min]" annotation(
+        Placement(visible = true, transformation(extent = {{-130, 16}, {-90, 56}}, rotation = 0), iconTransformation(extent = {{-140, 40}, {-100, 80}}, rotation = 0)));
+      discrete Modelica.SIunits.Time t_on "Next opening time";
+      discrete Modelica.SIunits.Time t_off "Next closing time";
+      parameter Modelica.SIunits.Time t_minus(fixed = false) "Some time ahead of startTime";
+    initial equation
+      t_minus = time - 10;
+      t_on = t_minus;
+      t_off = t_minus;
+    algorithm
+      when RR > 1 then
+        t_on := time + 1;
+      end when;
+      when RR < 1 then
+        t_on := t_minus;
+      end when;
+      when time > t_on then
+        t_on := t_on + 60/RR;
+        t_off := time + 60/RR*dutyCycle/100;
+      end when;
+    equation
+      opening = if time < t_off then 1 else 0;
+      annotation(
+        Icon(coordinateSystem(extent = {{-120, -120}, {120, 120}}), graphics = {Rectangle( fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-120, 120}, {120, -120}}), Ellipse(lineColor = {160, 160, 164}, extent = {{-80, 80}, {80, -80}}, endAngle = 360), Line(points = {{0, 80}, {0, 60}}, color = {160, 160, 164}), Line(points = {{80, 0}, {60, 0}}, color = {160, 160, 164}), Line(points = {{0, -80}, {0, -60}}, color = {160, 160, 164}), Line(points = {{-80, 0}, {-60, 0}}, color = {160, 160, 164}), Line(points = {{37, 70}, {26, 50}}, color = {160, 160, 164}), Line(points = {{70, 38}, {49, 26}}, color = {160, 160, 164}), Line(points = {{71, -37}, {52, -27}}, color = {160, 160, 164}), Line(points = {{39, -70}, {29, -51}}, color = {160, 160, 164}), Line(points = {{-39, -70}, {-29, -52}}, color = {160, 160, 164}), Line(points = {{-71, -37}, {-50, -26}}, color = {160, 160, 164}), Line(points = {{-71, 37}, {-54, 28}}, color = {160, 160, 164}), Line(points = {{-38, 70}, {-28, 51}}, color = {160, 160, 164}), Line(points = {{0, 0}, {44, 48}}, thickness = 0.5)}),
+        Diagram(coordinateSystem(extent = {{-120, -120}, {120, 120}})),
+  experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
+    end PatientController;
   end Controls;
   annotation(
-    version = "1.0.1",
+    version = "1.1.0",
     uses(Modelica(version = "3.2.3")));
 end MEV;
