@@ -418,7 +418,7 @@ francesco.casella@polimi.it</a>.
     model StandardPatient
       PatientValve valve_in annotation(
         Placement(visible = true, transformation(origin = {-60, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Components.Resistance resistance(R = kR * 2.7e-2 * 9.81 * 999 / 0.001) annotation(
+      Components.Resistance resistance(R = kR * R) annotation(
         Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = -90, origin = {12, -54})));
       Sources.PressureSource peep(prel = 1200) annotation(
         Placement(visible = true, transformation(origin = {88, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -434,8 +434,8 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{84, 70}, {64, 90}})));
       Modelica.Blocks.Interfaces.RealInput valveCommand annotation(
         Placement(transformation(extent = {{-134, 60}, {-94, 100}}), iconTransformation(extent = {{-100, -16}, {-68, 16}})));
-      parameter Types.Compliance C = 0.04e-3 / (0.01 * 9.81 * 999) "Compliance";
-      parameter Types.Resistance R = 2.7e-2 * 9.81 * 999 / 0.001 "Resistance";
+      parameter Types.Compliance C = 40/1000 / (0.01*9.81*999) "Compliance";
+      parameter Types.Resistance R = 12/100 * 9.81*999/0.001 "Resistance";
       parameter Types.RelativePressure pstart = 1200 "Initial relative pressure";
       parameter Modelica.SIunits.PerUnit kC = 1 "Correction factor for compliance";
       parameter Modelica.SIunits.PerUnit kR = 1 "Correction factor for resistance";
