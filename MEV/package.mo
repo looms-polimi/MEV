@@ -1,4 +1,3 @@
-within ;
 package MEV "Models of the Multiple Emergency Ventilator"
   extends Modelica.Icons.Package;
 
@@ -493,16 +492,14 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{78, -80}, {138, -20}})));
       inner Ambient ambient annotation(
         Placement(transformation(extent = {{100, 60}, {120, 80}})));
-      Controls.PatientValveSequencer patientValveSequencer(N = N) annotation(
-        Placement(transformation(extent = {{26, -64}, {54, -36}})));
       ParameterizedComponents.SupplyValve supplyValveModulating annotation(
         Placement(transformation(extent = {{-120, 4}, {-104, 20}})));
       Controls.OnOffControllerWithHysteresis onOffControllerWithHysteresis(level_min = bellJar.ymin + 0.02, level_max = bellJar.ymax - 0.02) annotation(
         Placement(transformation(extent = {{-52, 18}, {-72, 38}})));
       Controls.LinearController linearController(level_sp = (bellJar.ymin + bellJar.ymax) / 2 + 0.030, Kp = 10, T = 1) annotation(
         Placement(transformation(extent = {{-52, 48}, {-72, 68}})));
-      Modelica.Blocks.Sources.Step step[N](height = fill(40, N)) annotation(
-        Placement(transformation(extent = {{-26, -60}, {-6, -40}})));
+      MEV.Controls.PatientController patientControllers[N] annotation(
+        Placement(visible = true, transformation(origin = {52, -52}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
     equation
       connect(pressureSource.port, supplyValveOnOff.inlet) annotation(
         Line(points = {{-168, 0}, {-140, 0}, {-140, -24}, {-120, -24}}, color = {111, 164, 171}));
@@ -526,10 +523,6 @@ francesco.casella@polimi.it</a>.
         Line(points = {{-73, 58}, {-112, 58}, {-112, 15.36}}, color = {0, 0, 127}));
       connect(onOffControllerWithHysteresis.valveOpening, supplyValveOnOff.opening) annotation(
         Line(points = {{-73, 28}, {-88, 28}, {-88, -6}, {-112, -6}, {-112, -20.64}}, color = {0, 0, 127}));
-      connect(patientValveSequencer.valveCommands, patients.valveCommand) annotation(
-        Line(points = {{54, -50}, {68, -50}, {68, -50}, {90, -50}}, color = {0, 0, 127}));
-      connect(step.y, patientValveSequencer.dutyCycles) annotation(
-        Line(points = {{-5, -50}, {26, -50}}, color = {0, 0, 127}));
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-180, -100}, {180, 100}})),
         Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "%N% X"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "%N% X")}));
@@ -566,56 +559,64 @@ francesco.casella@polimi.it</a>.
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 0, 0, 0, 0, 0, 0, 0, 0, 0}, startTime = {10, 0, 0, 0, 0, 0, 0, 0, 0, 0}), bellJar(ystart = bellJar.ymin + 0.005));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),    experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
       end Scenario1;
 
       model Scenario2 "Five patients attached, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 0, 0, 0, 0, 0}));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 15, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 15, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
       end Scenario2;
 
       model Scenario3 "Ten patients attached, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario3;
 
       model Scenario4 "Ten patients attached, 5 with limited compliance, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patients(kC = {1, 0.5, 1, 1, 0.5, 0.5, 1, 0.5, 0.5, 1}));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario4;
 
       model Scenario5 "Nine patients attached, one more is attached at time = 10, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}, startTime = {0, 0, 0, 0, 0, 0, 0, 0, 0, 10}));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario5;
 
       model Scenario6 "Ten patients attached, all with same phase"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patientValveSequencer(phases = zeros(10)));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario6;
 
       model Scenario7 "Ten patients attached,leak on the last patient at time = 10"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patients(leakOpening(y = {0, 0, 0, 0, 0, 0, 0, 0, 0, if time < 10 then 0 else 1})));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario7;
 
       model Scenario8 "Twenty patients attached, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.BaseSystem(N = 20, bellJar(ystart = 0.060));
         annotation(
-      Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),        experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
+          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
+          experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario8;
     end LinearControl;
 
@@ -908,7 +909,7 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{60, -30}, {40, -10}})));
       Modelica.Blocks.Sources.Pulse opening(amplitude = -25, width = 40, period = 60 / 20, startTime = 0) annotation(
         Placement(visible = true, transformation(origin = {52, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      inner Ambient ambient(useOnOffControl = true)  annotation(
+      inner Ambient ambient(useOnOffControl = true) annotation(
         Placement(transformation(extent = {{110, 30}, {130, 50}})));
       Controls.OnOffControllerWithHysteresis controller(level_min = bellJar.ymin + 0.02, level_max = bellJar.ymax - 0.02) annotation(
         Placement(transformation(extent = {{-28, 0}, {-44, 16}})));
@@ -995,22 +996,29 @@ francesco.casella@polimi.it</a>.
         Diagram(coordinateSystem(preserveAspectRatio = false)));
     end TestSequencer;
 
-    model TestPatientController
+    model TestPatientController1 "Test patient controller with initial RR > 1"
       extends Modelica.Icons.Example;
       Controls.PatientController patientController annotation(
         Placement(visible = true, transformation(origin = {0, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
-      Modelica.Blocks.Sources.TimeTable RR(table = [0, 0; 10, 0; 10, 30; 48, 30; 48, 20; 79, 20; 79, 0; 100, 0])  annotation(
+      Modelica.Blocks.Sources.TimeTable RR(table = [0, 30; 48, 30; 48, 20; 79, 20; 79, 0; 100, 0]) annotation(
         Placement(visible = true, transformation(origin = {-62, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-      Modelica.Blocks.Sources.TimeTable dutyCycle(table = [0, 50; 20, 50; 50, 25; 100, 25])  annotation(
+      Modelica.Blocks.Sources.TimeTable dutyCycle(table = [0, 50; 20, 50; 50, 25; 100, 25]) annotation(
         Placement(visible = true, transformation(origin = {-62, -24}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     equation
       connect(RR.y, patientController.RR) annotation(
         Line(points = {{-50, 12}, {-28, 12}, {-28, 6}, {-12, 6}}, color = {0, 0, 127}));
       connect(dutyCycle.y, patientController.dutyCycle) annotation(
         Line(points = {{-50, -24}, {-36, -24}, {-36, -6}, {-12, -6}}, color = {0, 0, 127}));
-    annotation(
-        experiment(StartTime = 0, StopTime = 100, Tolerance = 1e-6, Interval = 0.2));
-    end TestPatientController;
+      annotation(
+        experiment(StartTime = 0, StopTime = 100, Tolerance = 1e-06, Interval = 0.2));
+    end TestPatientController1;
+
+    model TestPatientController2
+      extends MEV.Test.TestPatientController1(
+        RR(table = [0, 0; 10, 0; 10, 30; 48, 30; 48, 20; 79, 20; 79, 0; 100, 0]));
+      annotation(
+        experiment(StartTime = 0, StopTime = 100, Tolerance = 1e-06, Interval = 0.2));
+    end TestPatientController2;
   end Test;
 
   package Media "Medium models"
@@ -1062,8 +1070,7 @@ francesco.casella@polimi.it</a>.
     type Density = Modelica.SIunits.Density(nominal = 1.2, start = 1.2, displayUnit = "kg/m3");
     type Length = Modelica.SIunits.Length;
     type Velocity = Modelica.SIunits.Velocity;
-    
-    type VelocitySquared = Real(unit="m2/s2");
+    type VelocitySquared = Real(unit = "m2/s2");
     type Temperature = Modelica.SIunits.Temperature(start = 288.15, nominal = 300);
     type Compliance = Real(unit = "m3/Pa");
     type Resistance = Real(unit = "Pa.s/m3");
@@ -1178,36 +1185,39 @@ francesco.casella@polimi.it</a>.
     end DutyCycleGenerator;
 
     model PatientController
-    Modelica.Blocks.Interfaces.RealOutput opening "Opening signal for patient valve [p.u.]" annotation(
-        Placement(visible = true,transformation(extent = {{84, -2}, {104, 18}}, rotation = 0), iconTransformation(extent = {{100, -20}, {140, 20}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealInput dutyCycle "Duty cycle [%]" annotation(
+      Modelica.Blocks.Interfaces.RealOutput opening "Opening signal for patient valve [p.u.]" annotation(
+        Placement(visible = true, transformation(extent = {{84, -2}, {104, 18}}, rotation = 0), iconTransformation(extent = {{100, -20}, {140, 20}}, rotation = 0)));
+      Modelica.Blocks.Interfaces.RealInput dutyCycle "Duty cycle [%]" annotation(
         Placement(visible = true, transformation(extent = {{-130, -36}, {-90, 4}}, rotation = 0), iconTransformation(extent = {{-140, -80}, {-100, -40}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealInput RR "Respiratory rate [acts/min]" annotation(
+      Modelica.Blocks.Interfaces.RealInput RR "Respiratory rate [acts/min]" annotation(
         Placement(visible = true, transformation(extent = {{-130, 16}, {-90, 56}}, rotation = 0), iconTransformation(extent = {{-140, 40}, {-100, 80}}, rotation = 0)));
       discrete Modelica.SIunits.Time t_on "Next opening time";
       discrete Modelica.SIunits.Time t_off "Next closing time";
-      parameter Modelica.SIunits.Time t_minus(fixed = false) "Some time ahead of startTime";
+      Boolean active "The controller is activated";
     initial equation
-      t_minus = time - 10;
-      t_on = t_minus;
-      t_off = t_minus;
-    algorithm
-      when RR > 1 then
-        t_on := time + 1;
-      end when;
-      when RR < 1 then
-        t_on := t_minus;
-      end when;
-      when time > t_on then
-        t_on := t_on + 60/RR;
-        t_off := time + 60/RR*dutyCycle/100;
-      end when;
+      active = if RR > 1 then true else false;
+      if active then
+        t_on = time + 60/RR;
+        t_off = time + 60 / RR * dutyCycle / 100;
+      else
+        t_on = time;
+        t_off = time;
+      end if;
     equation
-      opening = if time < t_off then 1 else 0;
+      when RR > 1 then
+        active = true;
+      elsewhen RR < 1 then
+        active = false;
+      end when;
+      when pre(active) and time >= pre(t_on) then
+        t_on = time + 60 / RR;
+        t_off = time + 60 / RR * dutyCycle / 100;
+      end when;
+      opening = if active and time < t_off then 1 else 0;
       annotation(
-        Icon(coordinateSystem(extent = {{-120, -120}, {120, 120}}), graphics = {Rectangle( fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-120, 120}, {120, -120}}), Ellipse(lineColor = {160, 160, 164}, extent = {{-80, 80}, {80, -80}}, endAngle = 360), Line(points = {{0, 80}, {0, 60}}, color = {160, 160, 164}), Line(points = {{80, 0}, {60, 0}}, color = {160, 160, 164}), Line(points = {{0, -80}, {0, -60}}, color = {160, 160, 164}), Line(points = {{-80, 0}, {-60, 0}}, color = {160, 160, 164}), Line(points = {{37, 70}, {26, 50}}, color = {160, 160, 164}), Line(points = {{70, 38}, {49, 26}}, color = {160, 160, 164}), Line(points = {{71, -37}, {52, -27}}, color = {160, 160, 164}), Line(points = {{39, -70}, {29, -51}}, color = {160, 160, 164}), Line(points = {{-39, -70}, {-29, -52}}, color = {160, 160, 164}), Line(points = {{-71, -37}, {-50, -26}}, color = {160, 160, 164}), Line(points = {{-71, 37}, {-54, 28}}, color = {160, 160, 164}), Line(points = {{-38, 70}, {-28, 51}}, color = {160, 160, 164}), Line(points = {{0, 0}, {44, 48}}, thickness = 0.5)}),
+        Icon(coordinateSystem(extent = {{-120, -120}, {120, 120}}), graphics = {Rectangle(fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-120, 120}, {120, -120}}), Ellipse(lineColor = {160, 160, 164}, extent = {{-80, 80}, {80, -80}}, endAngle = 360), Line(points = {{0, 80}, {0, 60}}, color = {160, 160, 164}), Line(points = {{80, 0}, {60, 0}}, color = {160, 160, 164}), Line(points = {{0, -80}, {0, -60}}, color = {160, 160, 164}), Line(points = {{-80, 0}, {-60, 0}}, color = {160, 160, 164}), Line(points = {{37, 70}, {26, 50}}, color = {160, 160, 164}), Line(points = {{70, 38}, {49, 26}}, color = {160, 160, 164}), Line(points = {{71, -37}, {52, -27}}, color = {160, 160, 164}), Line(points = {{39, -70}, {29, -51}}, color = {160, 160, 164}), Line(points = {{-39, -70}, {-29, -52}}, color = {160, 160, 164}), Line(points = {{-71, -37}, {-50, -26}}, color = {160, 160, 164}), Line(points = {{-71, 37}, {-54, 28}}, color = {160, 160, 164}), Line(points = {{-38, 70}, {-28, 51}}, color = {160, 160, 164}), Line(points = {{0, 0}, {44, 48}}, thickness = 0.5)}),
         Diagram(coordinateSystem(extent = {{-120, -120}, {120, 120}})),
-  experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
+        experiment(StartTime = 0, StopTime = 1, Tolerance = 1e-6, Interval = 0.002));
     end PatientController;
   end Controls;
   annotation(
