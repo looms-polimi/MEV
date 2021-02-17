@@ -539,9 +539,13 @@ francesco.casella@polimi.it</a>.
     end BaseSystem;
 
     model StandardPatientMixSystem "System with standard mix of 10 patients"
-      extends MEV.SystemModels.BaseSystem(patients(
-        C = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1e6/(0.01*9.81*999),
-        R = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001));
+      extends MEV.SystemModels.BaseSystem(
+        patients(
+          C               = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1e6/(0.01*9.81*999),
+          R               = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001),
+        RR(height         = {30, 29, 28, 23, 22, 21, 19, 16, 15, 14},
+           each startTime = 1e6),
+        dutyCycle(offset  = {40, 40, 40, 33, 33, 33, 33, 33, 33, 33}));
     end StandardPatientMixSystem;
 
     model WorstCasePatientSystem "Worst case with 10 patients max C min R"
@@ -565,12 +569,10 @@ francesco.casella@polimi.it</a>.
     package LinearControl "Scenarios with linear modulating control of the bell jar"
       extends Modelica.Icons.ExamplesPackage;
 
-      model Scenario1 "First patient is attached at time = 10, linear control"
+      model Scenario1 "System turned on, first patient attached at time = 10, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.StandardPatientMixSystem(
-          RR(height    = {0, 0, 0, 0, 22, 0, 0, 0, 0, 0},
-             startTime = {0, 0, 0, 0, 10, 0, 0, 0, 0, 0}),
-          dutyCycle(offset = { 0, 0, 0, 0, 33, 0, 0, 0, 0, 0}),
+          RR(startTime = {1e6, 1e6, 1e6, 1e6, 10, 1e6, 1e6, 1e6, 1e6, 1e6}),
           bellJar(ystart = bellJar.ymin + 0.005));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
@@ -579,7 +581,10 @@ francesco.casella@polimi.it</a>.
 
       model Scenario2 "Five patients attached, linear control"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 0, 0, 0, 0, 0}));
+        extends SystemModels.StandardPatientMixSystem(
+          RR(height    = {0, 0, 0, 0, 22, 0, 0, 0, 0, 0},
+             startTime = {0, 0, 0, 0, 10, 0, 0, 0, 0, 0}),
+          dutyCycle(offset = { 0, 0, 0, 0, 33, 0, 0, 0, 0, 0}));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 15, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
