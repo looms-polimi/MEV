@@ -225,13 +225,16 @@ francesco.casella@polimi.it</a>.
       Types.RelativePressure p "Relative pressure";
       Types.MassFlowRate w "Absolute pressure";
       Types.Volume V "Volume of breathed air";
+      Types.Volume Vb "Total volume of breathed air";
       Media.Air air;
     initial equation
       p = pstart;
       V = 0;
+      Vb = 0;
     equation
       C * der(p) = w / air.rho;
       der(V) = w / air.rho;
+      der(Vb) = max(der(V), 0);
 // Reference air properties
       air.p = ambient.p;
 // Boundary conditions
