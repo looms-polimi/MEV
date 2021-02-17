@@ -544,22 +544,32 @@ francesco.casella@polimi.it</a>.
           C               = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1e6/(0.01*9.81*999),
           R               = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001),
         RR(height         = {30, 29, 28, 23, 22, 21, 19, 16, 15, 14},
-           each startTime = 1e6),
-        dutyCycle(offset  = {40, 40, 40, 33, 33, 33, 33, 33, 33, 33}));
+           each startTime = -10),
+        dutyCycle(offset  = {40, 40, 40, 33, 33, 33, 33, 20, 25, 33}));
     end StandardPatientMixSystem;
 
     model WorstCasePatientSystem "Worst case with 10 patients max C min R"
-      extends MEV.SystemModels.BaseSystem(patients(
-        each C = 60/1e6/(0.01*9.81*999),
-        each R = 6/100*9.81*999/0.001));
+      extends MEV.SystemModels.BaseSystem(
+        patients(
+          each C = 60/1e6/(0.01*9.81*999),
+          each R = 6/100*9.81*999/0.001),
+        RR(each height = 16,
+           each startTime = -10),
+        dutyCycle(each offset = 20));
     end WorstCasePatientSystem;
 
     model StandardPatientMix2XSystem "System with 2X standard mix of patients"
-      extends MEV.SystemModels.BaseSystem(N = 20, patients(
-        C = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60,
-             30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1e6/(0.01*9.81*999),
-        R = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18,
-              6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001));
+      extends MEV.SystemModels.BaseSystem(N = 20,
+        patients(
+          C = {30, 30, 30, 40, 40, 40, 40, 60, 60, 60,
+               30, 30, 30, 40, 40, 40, 40, 60, 60, 60}/1e6/(0.01*9.81*999),
+          R = { 6, 12, 18,  6, 12, 12, 18,  6, 12, 18,
+                6, 12, 18,  6, 12, 12, 18,  6, 12, 18}/100*9.81*999/0.001),
+          RR(height         = {30, 29, 28, 23, 22, 21, 19, 16, 15, 14,
+                               30, 29, 28, 23, 22, 21, 19, 16, 15, 14},
+             each startTime = -10),
+          dutyCycle(offset  = {40, 40, 40, 33, 33, 33, 33, 20, 25, 33,
+                               40, 40, 40, 33, 33, 33, 33, 20, 25, 33}));
     end StandardPatientMix2XSystem;
   end SystemModels;
 
@@ -582,9 +592,7 @@ francesco.casella@polimi.it</a>.
       model Scenario2 "Five patients attached, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.StandardPatientMixSystem(
-          RR(height    = {0, 0, 0, 0, 22, 0, 0, 0, 0, 0},
-             startTime = {0, 0, 0, 0, 10, 0, 0, 0, 0, 0}),
-          dutyCycle(offset = { 0, 0, 0, 0, 33, 0, 0, 0, 0, 0}));
+          RR(startTime = {-10, 1e6, -10, 1e6, -10, 1e6, 1e6, -10, 1e6, -10}));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 15, Interval = 0.005, Tolerance = 1e-06, StartTime = 0));
@@ -592,51 +600,47 @@ francesco.casella@polimi.it</a>.
 
       model Scenario3 "Ten patients attached, linear control"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}));
+        extends SystemModels.StandardPatientMixSystem;
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario3;
 
-      model Scenario4 "Ten patients attached, 5 with limited compliance, linear control"
+      model Scenario4 "Nine patients attached, one more is attached at time = 10, linear control"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patients(kC = {1, 0.5, 1, 1, 0.5, 0.5, 1, 0.5, 0.5, 1}));
+        extends SystemModels.StandardPatientMixSystem(
+          RR(startTime = {-10, -10, -10, -10, -10, 10, -10, -10, -10, -10}));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario4;
 
-      model Scenario5 "Nine patients attached, one more is attached at time = 10, linear control"
+      model Scenario5 "Worst-worst case, ten patients attached, all with same phase"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}, startTime = {0, 0, 0, 0, 0, 0, 0, 0, 0, 10}));
+        extends SystemModels.WorstCasePatientSystem;
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario5;
 
-      model Scenario6 "Ten patients attached, all with same phase"
+      model Scenario6 "Ten patients attached,leak on the last patient at time = 5"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patientValveSequencer(phases = zeros(10)));
+        extends SystemModels.StandardPatientMixSystem(
+          RR(each startTime = -10),
+          patients(leakOpening(y = {0, 0, 0, 0, 0, 0, 0, 0, 0, if time < 5 then 0 else 1})));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario6;
 
-      model Scenario7 "Ten patients attached,leak on the last patient at time = 10"
+      model Scenario7 "Twenty patients attached, linear control"
         extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(step(height = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40}), patients(leakOpening(y = {0, 0, 0, 0, 0, 0, 0, 0, 0, if time < 10 then 0 else 1})));
+        extends SystemModels.StandardPatientMix2XSystem(
+          RR(each startTime = -10));
         annotation(
           Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
           experiment(StopTime = 25, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario7;
-
-      model Scenario8 "Twenty patients attached, linear control"
-        extends Modelica.Icons.Example;
-        extends SystemModels.BaseSystem(N = 20, bellJar(ystart = 0.060));
-        annotation(
-          Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}})),
-          experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
-      end Scenario8;
     end LinearControl;
 
     package OnOffControl "Scenarios with on-off emergency control of the bell jar"
