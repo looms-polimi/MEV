@@ -615,7 +615,7 @@ francesco.casella@polimi.it</a>.
           experiment(StopTime = 15, Interval = 5e-3, Tolerance = 1e-06));
       end Scenario4;
 
-      model Scenario5 "Worst-worst case, ten patients attached, all with same phase"
+      model Scenario5 "Worst-worst case, ten patients attached, all with same phase, linear control"
         extends Modelica.Icons.Example;
         extends SystemModels.WorstCasePatientSystem;
         annotation(
@@ -646,7 +646,7 @@ francesco.casella@polimi.it</a>.
     package OnOffControl "Scenarios with on-off emergency control of the bell jar"
       extends Modelica.Icons.ExamplesPackage;
 
-      model Scenario1 "First patient is attached at time = 10, on-off control"
+      model Scenario1 "System turned on, first patient attached at time = 10, on-off control"
         extends LinearControl.Scenario1(ambient(useOnOffControl = true));
         annotation(
           experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
@@ -664,35 +664,29 @@ francesco.casella@polimi.it</a>.
           experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario3;
 
-      model Scenario4 "Ten patients attached, 5 with limited compliance, on-off control"
+      model Scenario4 "Nine patients attached, one more is attached at time = 10, on-off control"
         extends LinearControl.Scenario4(ambient(useOnOffControl = true));
         annotation(
           experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario4;
 
-      model Scenario5 "Nine patients attached, one more is attached at time = 10, on-off control"
+      model Scenario5 "Worst-worst case, ten patients attached, all with same phase, on-off control"
         extends LinearControl.Scenario5(ambient(useOnOffControl = true));
         annotation(
           experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario5;
 
-      model Scenario6 "Ten patients attached, all with same phase"
+      model Scenario6 "Ten patients attached,leak on the last patient at time = 5"
         extends LinearControl.Scenario6(ambient(useOnOffControl = true));
         annotation(
           experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
       end Scenario6;
 
-      model Scenario7 "Ten patients attached, last patient tube detached at time = 10, on-off control"
+      model Scenario7 "Twenty patients attached, on-off control"
         extends LinearControl.Scenario7(ambient(useOnOffControl = true));
         annotation(
           experiment(StopTime = 30, Interval = 0.005, Tolerance = 1e-06));
       end Scenario7;
-
-      model Scenario8 "Twenty patients attached, on-off control"
-        extends LinearControl.Scenario8(ambient(useOnOffControl = true));
-        annotation(
-          experiment(StopTime = 25, Interval = 0.005, Tolerance = 1e-06));
-      end Scenario8;
     end OnOffControl;
   end Simulations;
 
