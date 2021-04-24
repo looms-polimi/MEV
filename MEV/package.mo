@@ -489,10 +489,10 @@ francesco.casella@polimi.it</a>.
         Placement(transformation(extent = {{-120, -32}, {-104, -16}})));
       Sources.PressureSource pressureSource(prel = 2e5, useRelativePressure = true) annotation(
         Placement(transformation(extent = {{-178, -10}, {-158, 10}})));
-      ParameterizedComponents.PipeSegment pipeSegments[N] annotation(
-        Placement(transformation(extent = {{46, -22}, {90, 22}})));
-      ParameterizedComponents.StandardPatient patients[N] annotation(
-        Placement(transformation(extent = {{78, -80}, {138, -20}})));
+      MEV.ParameterizedComponents.PipeSegment pipeSegments[N] annotation(
+        Placement(visible = true, transformation(extent = {{48, -22}, {92, 22}}, rotation = 0)));
+      MEV.ParameterizedComponents.StandardPatient patients[N] annotation(
+        Placement(visible = true, transformation(extent = {{88, -78}, {148, -18}}, rotation = 0)));
       inner Ambient ambient annotation(
         Placement(transformation(extent = {{100, 60}, {120, 80}})));
       ParameterizedComponents.SupplyValve supplyValveModulating annotation(
@@ -512,12 +512,12 @@ francesco.casella@polimi.it</a>.
         Line(points = {{-168, 0}, {-140, 0}, {-140, -24}, {-120, -24}}, color = {111, 164, 171}));
       connect(supplyValveOnOff.outlet, bellJar.inlet) annotation(
         Line(points = {{-104, -24}, {-40, -24}, {-40, 0}, {-22, 0}}, color = {111, 164, 171}));
-      connect(bellJar.outlet, pipeSegments[1].inlet) annotation(
-        Line(points = {{14, 0}, {46, 0}}, color = {111, 164, 171}));
-      connect(pipeSegments.outlet, patients.supply) annotation(
-        Line(points = {{90, 0}, {108, 0}, {108, -32.8571}}, color = {111, 164, 171}));
-      connect(pipeSegments[1:N - 1].outlet, pipeSegments[2:N].inlet) annotation(
-        Line(points = {{90, 0}, {46, 0}}, color = {111, 164, 171}));
+  connect(bellJar.outlet, pipeSegments[1].inlet) annotation(
+        Line(points = {{14, 0}, {48, 0}}, color = {111, 164, 171}));
+  connect(pipeSegments.outlet, patients.supply) annotation(
+        Line(points = {{92, 0}, {118, 0}, {118, -31}}, color = {111, 164, 171}));
+  connect(pipeSegments[1:N - 1].outlet, pipeSegments[2:N].inlet) annotation(
+        Line(points = {{92, 0}, {48, 0}}, color = {111, 164, 171}));
       connect(pressureSource.port, supplyValveModulating.inlet) annotation(
         Line(points = {{-168, 0}, {-140, 0}, {-140, 12}, {-120, 12}}, color = {111, 164, 171}));
       connect(supplyValveModulating.outlet, bellJar.inlet) annotation(
@@ -531,14 +531,14 @@ francesco.casella@polimi.it</a>.
       connect(onOffControllerWithHysteresis.valveOpening, supplyValveOnOff.opening) annotation(
         Line(points = {{-73, 28}, {-88, 28}, {-88, -6}, {-112, -6}, {-112, -20.64}}, color = {0, 0, 127}));
   connect(patientControllers.opening, patients.valveCommand) annotation(
-        Line(points = {{60, -60}, {75, -60}, {75, -50}, {90, -50}}, color = {0, 0, 127}, thickness = 0.5));
+        Line(points = {{60, -60}, {75, -60}, {75, -48}, {100, -48}}, color = {0, 0, 127}, thickness = 0.5));
   connect(RR.y, patientControllers.RR) annotation(
         Line(points = {{21, -40}, {28, -40}, {28, -54}, {40, -54}}, color = {0, 0, 127}, thickness = 0.5));
   connect(dutyCycle.y, patientControllers.dutyCycle) annotation(
         Line(points = {{21, -76}, {28, -76}, {28, -66}, {40, -66}}, color = {0, 0, 127}, thickness = 0.5));
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-180, -100}, {180, 100}})),
-        Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "%N% X"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "%N% X")}));
+        Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(origin = {6, -4},lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "N = 10"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "N = 10")}));
     end BaseSystem;
 
     model StandardPatientMixSystem "System with standard mix of 10 patients"
