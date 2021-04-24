@@ -1241,6 +1241,6 @@ francesco.casella@polimi.it</a>.
     end PatientController;
   end Controls;
   annotation(
-    version = "1.1.0",
+    version = "1.1.1",
     uses(Modelica(version = "3.2.3")));
 end MEV;
