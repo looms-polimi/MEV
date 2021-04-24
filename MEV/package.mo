@@ -538,7 +538,7 @@ francesco.casella@polimi.it</a>.
         Line(points = {{21, -76}, {28, -76}, {28, -66}, {40, -66}}, color = {0, 0, 127}, thickness = 0.5));
       annotation(
         Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-180, -100}, {180, 100}})),
-        Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(origin = {6, -4},lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "N = 10"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "N = 10")}));
+        Diagram(coordinateSystem(extent = {{-200, -100}, {140, 100}}), graphics = {Text(origin = {6, -4},lineColor = {28, 108, 200}, extent = {{52, 20}, {76, 12}}, textString = "10 X"), Text(lineColor = {28, 108, 200}, extent = {{88, -56}, {112, -64}}, textString = "10 X")}));
     end BaseSystem;
 
     model StandardPatientMixSystem "System with standard mix of 10 patients"
